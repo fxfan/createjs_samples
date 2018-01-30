@@ -14,6 +14,17 @@ buffer = require 'vinyl-buffer'
 glob = require 'glob'
 path = require 'path'
 
+server = require 'gulp-webserver'
+
+
+gulp.task 'server', (done)->
+  gulp.src 'public'
+    .pipe server
+      host: 'localhost'
+      port: 3000
+      livereload: true
+
+
 gulp.task 'scripts', (done)->
 
   bundle = (file)->
