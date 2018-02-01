@@ -43,42 +43,51 @@ class Game {
     this.assets.installPlugin(createjs.Sound);
   }
 
-  // TODO
-  // onStart, onResume, onPause, onStop ライフライクル実装
-
   pushScene(scene) {
     scene.game = this;
+    if (this.scenes.length > 0) {
+      this._currentScene.onPause();
+    }
     this.scenes.push(scene);
     this._displayCurrentScene();
-    scene.onStart();
+    this._currentScene.onStart();
   }
 
   popScene() {
-    if (this.scenes.length === 0) {
-      throw "Number of scenes: 0. Can't pop out";
+    if (this.scenes.length < 2) {
+      throw `Number of scenes: ${this.scenes.length}. Can't pop it out`;
     }
-    this.scenes.pop();
+    this.scenes.pop().onStop();
     this._displayCurrentScene();
+    this._currentScene.onResume();
   }
 
   changeScene(scene) {
+    scene.game = this;
     if (this.scenes.length > 0) {
-      this.scenes.pop();
+      this.scenes.pop().onStop();
     }
-    this.pushScene(scene);
-  }
-
-  _displayCurrentScene() {
-    this.stage.removeAllChildren();
-    if (this.scenes.length > 0) {
-      this.stage.addChild(this.scenes[this.scenes.length - 1]);
-    }
+    this.scenes.push(scene);
+    this._displayCurrentScene();
+    this._currentScene.onStart();
   }
 
   start() {
     createjs.Ticker.addEventListener("tick", ()=> {
       this.stage.update(this);
     });
+  }
+
+  get _currentScene() {
+    if (this.scenes.length === 0) {
+      throw "Current scene isn't pushed";
+    }
+    return this.scenes[this.scenes.length - 1];
+  }
+
+  _displayCurrentScene() {
+    this.stage.removeAllChildren();
+    this.stage.addChild(this._currentScene);
   }
 
 }
