@@ -40,6 +40,7 @@ class Game {
 
     this.data = {};
     this.assets = new createjs.LoadQueue(true);
+    this.assets.installPlugin(createjs.Sound);
   }
 
   // TODO
@@ -130,6 +131,8 @@ class TitleScene extends Scene {
   onStart() {
     const bg = new createjs.Bitmap(this.game.assets.getResult("bg001"));
     this.addChild(bg);
+    this.bgm = createjs.Sound.play("8bit13", { loop: -1, volume: 0.5 });
+    this.addEventListener("click", ()=> createjs.Sound.play("onepoint07"));
   }
 }
 
@@ -137,6 +140,8 @@ window.addEventListener('load', () => {
 
   const game = new Game("Typing", 640, 480, 60);
   game.assets.loadManifest([
+    { "id": "8bit13", "src": "/audios/bgm_maoudamashii_8bit13.mp3" },
+    { "id": "onepoint07", "src": "/audios/se_maoudamashii_onepoint07.mp3" },
     { "id": "bg001", "src": "/images/bg/pipo-battlebg001.jpg" },
     { "id": "bg002", "src": "/images/bg/pipo-battlebg002.jpg" },
     { "id": "bg003", "src": "/images/bg/pipo-battlebg003.jpg" },
