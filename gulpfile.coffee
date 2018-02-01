@@ -1,6 +1,7 @@
 gulp = require 'gulp'
 
 util = require 'gulp-util'
+sourcemaps = require 'gulp-sourcemaps'
 concat = require 'gulp-concat'
 babel = require 'gulp-babel'
 uglify = require 'gulp-uglify'
@@ -45,8 +46,10 @@ gulp.task 'scripts', (done)->
     # http://yuheiy.hatenablog.com/entry/2016/12/11/215757
     # merge2はシーケンシャル処理できるから順序の問題はなさそう?
     merge(stream1, stream2)
+      .pipe sourcemaps.init()
       .pipe concat path.basename file
       .pipe uglify()
+      .pipe sourcemaps.write()
       .pipe gulp.dest "public/scripts/#{dest}"
 
   glob 'assets/scripts/**/*.{js,coffee}', (err, files)->
