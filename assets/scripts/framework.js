@@ -120,6 +120,12 @@ class LoadingScene extends Scene {
       .rect(0, 0, this.game.width, this.game.height);
     this.addChild(bg);
 
+    this.text = new createjs.Text("loading", "24px dot", "#fff");
+    this.text.textAlign = "center";
+    this.text.x = this.game.width / 2;
+    this.text.y = (this.game.height - 20) / 2 - 40;
+    this.addChild(this.text);
+
     this.bar = new LoadingBar();
     this.bar.x = (this.game.width - 200) / 2;
     this.bar.y = (this.game.height - 20) / 2;
@@ -296,6 +302,12 @@ window.addEventListener('load', () => {
     { "id": "enemy040a", "src": "/images/enemy/pipo-enemy040a.png" },
     { "id": "enemy040b", "src": "/images/enemy/pipo-enemy040b.png" }
   ], false);
-  game.pushScene(new LoadingScene());
-  game.start();
+
+  const dot = new FontFace("dot", "url(/fonts/JF-Dot-MPlusH12.woff2)");
+  document.fonts.add(dot);
+  document.fonts.ready.then(()=> {
+    game.pushScene(new LoadingScene());
+    game.start();
+  });
+
 });
