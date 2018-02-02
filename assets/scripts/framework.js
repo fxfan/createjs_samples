@@ -1,3 +1,19 @@
+class WebFonts {
+
+  constructor() {
+    this._fonts = [];
+  }
+
+  add(fontface) {
+    this._fonts.push(fontface);
+  }
+
+  load() {
+    return Promise.all(this._fonts.map(f => f.load()))
+      .then(fonts => fonts.forEach(f => document.fonts.add(f)));
+  }
+}
+
 
 class Scene extends createjs.Container {
 
@@ -41,6 +57,8 @@ class Game {
     this.data = {};
     this.assets = new createjs.LoadQueue(true);
     this.assets.installPlugin(createjs.Sound);
+
+    this.fonts = new WebFonts();
   }
 
   pushScene(scene) {
@@ -120,7 +138,7 @@ class LoadingScene extends Scene {
       .rect(0, 0, this.game.width, this.game.height);
     this.addChild(bg);
 
-    this.text = new createjs.Text("loading", "24px dot", "#fff");
+    this.text = new createjs.Text("Now Loading...", "bold 20px monospace", "#fff");
     this.text.textAlign = "center";
     this.text.x = this.game.width / 2;
     this.text.y = (this.game.height - 20) / 2 - 40;
@@ -151,6 +169,11 @@ class TitleScene extends Scene {
   }
 }
 
+class StartButton extends createjs.Bitmap {
+
+
+}
+
 window.addEventListener('load', () => {
 
   const game = new Game("Typing", 640, 480, 60);
@@ -177,6 +200,16 @@ window.addEventListener('load', () => {
     { "id": "bg018", "src": "/images/bg/pipo-battlebg018.jpg" },
     { "id": "bg019", "src": "/images/bg/pipo-battlebg019.jpg" },
     { "id": "bg020", "src": "/images/bg/pipo-battlebg020.jpg" },
+    { "id": "msg01", "src": "/images/text/mes01_f01_d01_c06_01.png" },
+    { "id": "msg02", "src": "/images/text/mes01_f01_d01_c06_02.png" },
+    { "id": "msg03", "src": "/images/text/mes01_f01_d01_c06_03.png" },
+    { "id": "msg04", "src": "/images/text/mes01_f01_d01_c06_04.png" },
+    { "id": "msg05", "src": "/images/text/mes01_f01_d01_c06_05.png" },
+    { "id": "msg06", "src": "/images/text/mes01_f01_d01_c06_06.png" },
+    { "id": "msg07", "src": "/images/text/mes01_f01_d01_c06_07.png" },
+    { "id": "msg08", "src": "/images/text/mes01_f01_d01_c06_08.png" },
+    { "id": "msg09", "src": "/images/text/mes01_f01_d01_c06_09.png" },
+    { "id": "msg10", "src": "/images/text/mes01_f01_d01_c06_10.png" },
     { "id": "boss001", "src": "/images/enemy/pipo-boss001.png" },
     { "id": "boss002", "src": "/images/enemy/pipo-boss002.png" },
     { "id": "boss003", "src": "/images/enemy/pipo-boss003.png" },
@@ -303,9 +336,17 @@ window.addEventListener('load', () => {
     { "id": "enemy040b", "src": "/images/enemy/pipo-enemy040b.png" }
   ], false);
 
-  const dot = new FontFace("dot", "url(/fonts/JF-Dot-MPlusH12.woff2)");
-  document.fonts.add(dot);
-  document.fonts.ready.then(()=> {
+  game.fonts.add(new FontFace("Shinonome14", "url(/fonts/JF-Dot-Shinonome14.woff2)"));
+  game.fonts.add(new FontFace("Shinonome16", "url(/fonts/JF-Dot-Shinonome16.woff2)"));
+  game.fonts.add(new FontFace("Kappa20", "url(/fonts/JF-Dot-Kappa20.woff2)"));
+  game.fonts.add(new FontFace("Kappa20B", "url(/fonts/JF-Dot-Kappa20B.woff2)"));
+
+  // game.fonts.add(new FontFace("DQ", "url(/fonts/GD-DOTFONT-DQ-TTF_008.woff2)"));
+  // game.fonts.add(new FontFace("dot-mplus", "url(/fonts/JF-Dot-MPlusH12.woff2)"));
+  // game.fonts.add(new FontFace("chibit", "url(/fonts/chibit.woff2)"));
+  // game.fonts.add(new FontFace("coopoppo", "url(/fonts/coopoppo.woff2)"));
+
+  game.fonts.load().then(()=> {
     game.pushScene(new LoadingScene());
     game.start();
   });
