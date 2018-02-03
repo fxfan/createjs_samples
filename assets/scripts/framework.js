@@ -164,14 +164,54 @@ class TitleScene extends Scene {
   onStart() {
     const bg = new createjs.Bitmap(this.game.assets.getResult("bg001"));
     this.addChild(bg);
+    const start = new StartButton(this.game);
+    start.x = (this.game.width - start.width) / 2;
+    start.y = (this.game.height - start.height) / 2;
+    this.addChild(start);
     this.bgm = createjs.Sound.play("8bit13", { loop: -1, volume: 0.5 });
     this.addEventListener("click", ()=> createjs.Sound.play("onepoint07"));
+  }
+
+  onPause() {
+    this.bgm.stop();
   }
 }
 
 class StartButton extends createjs.Bitmap {
 
+  constructor(game) {
+    super(game.assets.getResult("msg06"));
+    this.game = game;
+    this.sourceRect = {
+      x: 0,
+      y: 0,
+      width: 300,
+      height: 60
+    };
+    this.width = 300;
+    this.height = 60;
+    this.addEventListener("click", (e)=> {
+      createjs.Sound.play("onepoint16");
+      this.blink(()=> this.game.pushScene(new GameScene()));
+    });
+  }
 
+  blink(callback) {
+    const tween = createjs.Tween.get(this);
+    for (let i = 0; i < 10; i++) {
+      tween.to( { alpha: 0 }, 100).to( { alpha: 1 }, 100);
+    }
+    tween.call(callback);
+  }
+}
+
+class GameScene extends Scene {
+
+  onStart() {
+    const bg = new createjs.Bitmap(this.game.assets.getResult("bg009"));
+    this.addChild(bg);
+    this.bgm = createjs.Sound.play("fantasy11", { loop: -1, volume: 0.5 });
+  }
 }
 
 window.addEventListener('load', () => {
@@ -179,7 +219,9 @@ window.addEventListener('load', () => {
   const game = new Game("Typing", 640, 480, 60);
   game.assets.loadManifest([
     { "id": "8bit13", "src": "/audios/bgm_maoudamashii_8bit13.mp3" },
+    { "id": "fantasy11", "src": "/audios/bgm_maoudamashii_fantasy11.mp3" },
     { "id": "onepoint07", "src": "/audios/se_maoudamashii_onepoint07.mp3" },
+    { "id": "onepoint16", "src": "/audios/se_maoudamashii_onepoint16.mp3" },
     { "id": "bg001", "src": "/images/bg/pipo-battlebg001.jpg" },
     { "id": "bg002", "src": "/images/bg/pipo-battlebg002.jpg" },
     { "id": "bg003", "src": "/images/bg/pipo-battlebg003.jpg" },
