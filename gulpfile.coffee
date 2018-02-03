@@ -26,6 +26,24 @@ gulp.task 'server', (done)->
       livereload: true
 
 
+gulp.task 'images', (done)->
+  gulp.src './assets/images/**/*'
+    .pipe gulp.dest 'public/images'
+  done()
+
+
+gulp.task 'audios', (done)->
+  gulp.src './assets/audios/**/*'
+    .pipe gulp.dest 'public/audios'
+  done()
+
+
+gulp.task 'fonts', (done)->
+  gulp.src './assets/fonts/**/*'
+    .pipe gulp.dest 'public/fonts'
+  done()
+
+
 gulp.task 'scripts', (done)->
 
   bundle = (file)->
@@ -58,7 +76,14 @@ gulp.task 'scripts', (done)->
   done()
 
 
+gulp.task 'default', gulp.parallel ['images', 'audios', 'fonts', 'scripts'], (done)->
+  done()
+
+
 gulp.task 'watch', (done)->
+  gulp.watch 'assets/images/**/*', gulp.series('images')
+  gulp.watch 'assets/audios/**/*', gulp.series('audios')
+  gulp.watch 'assets/fonts/**/*', gulp.series('fonts')
   gulp.watch 'assets/scripts/**/*.{js,coffee}', gulp.series('scripts')
   done()
 
