@@ -210,7 +210,42 @@ class GameScene extends Scene {
   onStart() {
     const bg = new createjs.Bitmap(this.game.assets.getResult("bg009"));
     this.addChild(bg);
+    const mainConsole = new Window(this.game, this.game.width - 100, 150);
+    mainConsole.x = 50;
+    mainConsole.y = 300;
+    this.addChild(mainConsole);
+    const monster = new Monster(this.game, "boss001");
+    monster.scaleX = 0.5;
+    monster.scaleY = 0.5;
+    this.addChild(monster);
     this.bgm = createjs.Sound.play("fantasy11", { loop: -1, volume: 0.5 });
+  }
+}
+
+class Window extends createjs.Shape {
+
+  constructor(game, w, h) {
+    super();
+    this.game = game;
+    this.w = w;
+    this.h = h;
+    this.graphics
+      .beginFill("#000")
+      .drawRoundRect(0, 0, w, h, 10)
+      .endFill()
+      .setStrokeStyle(5)
+      .beginStroke("#fff")
+      .drawRoundRect(0, 0, w, h, 10)
+      .endStroke();
+  }
+}
+
+class Monster extends createjs.Bitmap {
+
+  constructor(game, id) {
+    super(game.assets.getResult(id));
+    this.game = game;
+    this.id = id;
   }
 }
 
