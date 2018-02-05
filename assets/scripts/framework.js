@@ -64,11 +64,11 @@ class Game {
   pushScene(scene) {
     scene.game = this;
     if (this.scenes.length > 0) {
-      this._currentScene.onPause();
+      this.currentScene.onPause();
     }
     this.scenes.push(scene);
     this._displayCurrentScene();
-    this._currentScene.onStart();
+    this.currentScene.onStart();
   }
 
   popScene() {
@@ -77,7 +77,7 @@ class Game {
     }
     this.scenes.pop().onStop();
     this._displayCurrentScene();
-    this._currentScene.onResume();
+    this.currentScene.onResume();
   }
 
   changeScene(scene) {
@@ -87,7 +87,7 @@ class Game {
     }
     this.scenes.push(scene);
     this._displayCurrentScene();
-    this._currentScene.onStart();
+    this.currentScene.onStart();
   }
 
   start() {
@@ -96,7 +96,7 @@ class Game {
     });
   }
 
-  get _currentScene() {
+  get currentScene() {
     if (this.scenes.length === 0) {
       throw "Current scene isn't pushed";
     }
@@ -105,7 +105,7 @@ class Game {
 
   _displayCurrentScene() {
     this.stage.removeAllChildren();
-    this.stage.addChild(this._currentScene);
+    this.stage.addChild(this.currentScene);
   }
 
 }
@@ -246,8 +246,36 @@ class Monster extends createjs.Bitmap {
     super(game.assets.getResult(id));
     this.game = game;
     this.id = id;
+    this.effectSheet = new Effect(game);
+    this.addEventListener("click", ()=> {
+      const attack = new createjs.Sprite(this.effectSheet, "attack");
+      attack.x = (this.game.width - 240) / 2
+      this.game.currentScene.addChild(attack);
+      createjs.Sound.play("sword-slash4");
+      attack.gotoAndPlay();
+    });
   }
 }
+
+class Effect extends createjs.SpriteSheet {
+
+  constructor(game) {
+    super({
+      images: [ game.assets.getResult("effect001") ],
+      frames: {
+        width: 240,
+        height: 240,
+        regX: 0,
+        regY: 0
+      },
+      animations: {
+        attack: { frames: [0, 1, 2, 3, 4, 5], next: false, frequency: 4 }
+      }
+    });
+    this.game = game;
+  }
+}
+
 
 window.addEventListener('load', () => {
 
@@ -257,6 +285,7 @@ window.addEventListener('load', () => {
     { "id": "fantasy11", "src": "/audios/bgm_maoudamashii_fantasy11.mp3" },
     { "id": "onepoint07", "src": "/audios/se_maoudamashii_onepoint07.mp3" },
     { "id": "onepoint16", "src": "/audios/se_maoudamashii_onepoint16.mp3" },
+    { "id": "sword-slash4", "src": "/audios/sword-slash4.mp3" },
     { "id": "bg001", "src": "/images/bg/pipo-battlebg001.jpg" },
     { "id": "bg002", "src": "/images/bg/pipo-battlebg002.jpg" },
     { "id": "bg003", "src": "/images/bg/pipo-battlebg003.jpg" },
@@ -277,6 +306,7 @@ window.addEventListener('load', () => {
     { "id": "bg018", "src": "/images/bg/pipo-battlebg018.jpg" },
     { "id": "bg019", "src": "/images/bg/pipo-battlebg019.jpg" },
     { "id": "bg020", "src": "/images/bg/pipo-battlebg020.jpg" },
+    { "id": "effect001", "src": "/images/effect/pipo-btleffect001.png" },
     { "id": "msg01", "src": "/images/text/mes01_f01_d01_c06_01.png" },
     { "id": "msg02", "src": "/images/text/mes01_f01_d01_c06_02.png" },
     { "id": "msg03", "src": "/images/text/mes01_f01_d01_c06_03.png" },
